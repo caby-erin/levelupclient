@@ -12,6 +12,10 @@ function Home() {
     getEvents().then((data) => setEvents(data));
   }, []);
 
+  const updateCards = () => {
+    getEvents().then((data) => setEvents(data));
+  };
+
   return (
     <article className="events">
       <h1>Events</h1>
@@ -24,7 +28,7 @@ function Home() {
       </Button>
       {events.map((event) => (
         <section key={`event--${event.id}`} className="event">
-          <EventCard id={event.id} game={event.game} description={event.description} date={event.date} time={event.time} organizer={event.organizer} />
+          <EventCard id={event.id} game={event.game} description={event.description} date={event.date} time={event.time} organizer={event.organizer} onUpdate={updateCards} />
         </section>
       ))}
     </article>
