@@ -2,25 +2,39 @@ import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { Button, Form } from 'react-bootstrap';
-import { createEvent } from '../../utils/data/eventData';
+import { updateEvent, createEvent } from '../../utils/data/eventData';
 import { getGames } from '../../utils/data/gameData';
+import { useAuth } from '../../utils/context/authContext';
 
 const initialState = {
   gameId: 1,
   description: '',
   date: '',
   time: '',
-  organizer: '',
+  userId: '',
 };
 
-const EventForm = ({ user }) => {
+function EventForm({ eventObj }) {
   const [games, setGames] = useState([]);
   const [currentEvent, setCurrentEvent] = useState(initialState);
   const router = useRouter();
+  const { user } = useAuth();
 
   useEffect(() => {
     getGames().then(setGames);
-  }, [user]);
+
+    if (eventObj.id) {
+      setCurrentEvent({
+        id: eventObj.id,
+        gameId: eventObj.game,
+        description: eventObj.description,
+        date: eventObj.date,
+        time: eventObj.time,
+        userId: user.uid,
+      });
+    }
+  }, [eventObj, user]);
+  console.warn(currentEvent);
 
   const handleChange = (e) => {
     // TODO: Complete the onChange function
@@ -34,16 +48,27 @@ const EventForm = ({ user }) => {
   const handleSubmit = (e) => {
     // Prevent form from being submitted
     e.preventDefault();
-
-    const event = {
-      game: currentEvent.gameId,
-      description: currentEvent.description,
-      date: currentEvent.date,
-      time: currentEvent.time,
-      userId: user.uid,
-    };
+    if (eventObj.id) {
+      const updatedEvent = {
+        id: eventObj.id,
+        gameId: Number(currentEvent.gameId),
+        description: currentEvent.description,
+        date: currentEvent.date,
+        time: currentEvent.time,
+        userId: user.uid,
+      };
       // Send POST request to your API
-    createEvent(event).then(() => router.push('/events/events'));
+      updateEvent(updatedEvent, user.uid).then(() => router.push('/events/events'));
+    } else {
+      const event = {
+        game: Number(currentEvent.gameId),
+        description: currentEvent.description,
+        date: currentEvent.date,
+        time: currentEvent.time,
+        userId: user.uid,
+      };
+      createEvent(event, user.uid).then(() => router.push('/events/events'));
+    }
   };
 
   return (
@@ -88,12 +113,26 @@ const EventForm = ({ user }) => {
       </Form>
     </>
   );
-};
+}
 
 EventForm.propTypes = {
   user: PropTypes.shape({
     uid: PropTypes.string.isRequired,
   }).isRequired,
+  eventObj: PropTypes.shape({
+    id: PropTypes.number,
+    description: PropTypes.string,
+    date: PropTypes.string,
+    time: PropTypes.string,
+    game: PropTypes.shape({
+      id: PropTypes.number,
+      title: PropTypes.string,
+    }),
+  }),
+};
+
+EventForm.defaultProps = {
+  eventObj: initialState,
 };
 
 export default EventForm;
