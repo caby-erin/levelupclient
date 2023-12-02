@@ -1,9 +1,11 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Card } from 'react-bootstrap';
+import { Card, Button } from 'react-bootstrap';
+import Link from 'next/link';
 
 const EventCard = ({
-  game, //
+  id,
+  game,
   description,
   date,
   time,
@@ -16,12 +18,17 @@ const EventCard = ({
       <Card.Text>Event Details: {description} </Card.Text>
       <Card.Text>Time: {time} </Card.Text>
       <Card.Text>Date: {date} </Card.Text>
-
+      <Link href={`/events/edit/${id}`} passHref>
+        <Button variant="primary" className="m-2">
+          Edit Event
+        </Button>
+      </Link>
     </Card.Body>
   </Card>
 );
 
 EventCard.propTypes = {
+  id: PropTypes.number.isRequired,
   game: PropTypes.number.isRequired,
   description: PropTypes.string.isRequired,
   date: PropTypes.string.isRequired,
