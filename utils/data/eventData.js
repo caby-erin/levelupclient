@@ -80,7 +80,7 @@ const leaveEvent = (eventId, uid) => new Promise((resolve, reject) => {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `${{ userId: uid }}`,
+      Authorization: `${uid}`,
     },
   })
     .then((data) => {
