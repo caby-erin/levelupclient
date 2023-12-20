@@ -75,8 +75,39 @@ const deleteEvent = (id) => new Promise((resolve, reject) => {
     .catch(reject);
 });
 
-const leaveEvent = (eventId, uid) => new Promise((resolve, reject) => {
-  fetch(`${clientCredentials.databaseURL}/events/${eventId}/leave`, {
+// const leaveEvent = (id, uid) => new Promise((resolve, reject) => {
+//   fetch(`${clientCredentials.databaseURL}/events/${id}/leave`, {
+//     method: 'DELETE',
+//     headers: {
+//       'Content-Type': 'application/json',
+//       Authorization: `${uid}`,
+//     },
+//   })
+//     .then((data) => {
+//       if (data) {
+//         resolve(data);
+//       } else {
+//         resolve([]);
+//       }
+//     })
+//     .catch(reject);
+// });
+
+// const joinEvent = (id, uid) => new Promise((resolve, reject) => {
+//   fetch(`${clientCredentials.databaseURL}/events/${id}/signup}`, {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json',
+//       Authorization: `${uid}`,
+//     },
+//   })
+//     .then((response) => response.json())
+//     .then((data) => resolve(data))
+//     .catch(reject);
+// });
+
+const leaveEvent = (event, uid) => new Promise((resolve, reject) => {
+  fetch(`${clientCredentials.databaseURL}/events/${event}/leave`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -93,17 +124,21 @@ const leaveEvent = (eventId, uid) => new Promise((resolve, reject) => {
     .catch(reject);
 });
 
-const joinEvent = (eventId, uid) => new Promise((resolve, reject) => {
-  fetch(`${clientCredentials.databaseURL}/events/${eventId}/signup}`, {
+const joinEvent = (event, uid) => new Promise((resolve, reject) => {
+  fetch(`${clientCredentials.databaseURL}/events/${event}/signup`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `${uid}`,
     },
-    body: JSON.stringify(uid),
   })
-    .then((response) => response.json())
-    .then((data) => resolve(data))
+    .then((data) => {
+      if (data) {
+        resolve(data);
+      } else {
+        resolve([]);
+      }
+    })
     .catch(reject);
 });
 
